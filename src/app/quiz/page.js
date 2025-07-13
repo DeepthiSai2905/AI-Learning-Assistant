@@ -2,13 +2,6 @@
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 export default function QuizPage() {
   const [topic, setTopic] = useState('');
@@ -40,48 +33,59 @@ export default function QuizPage() {
   };
 
   return (
-    <div className="mx-auto py-16 px-4">
+    <div className="my-20 py-16 px-4">
       <h2 className="font-heading text-3xl font-bold mb-6 text-blue-700 text-center">AI Quiz Generator</h2>
-      <form onSubmit={handleGenerateQuiz} className="flex flex-col gap-4 mb-8">
+      <form onSubmit={handleGenerateQuiz} className="flex flex-col gap-4 mb-8 items-center">
         <Input
           type="text"
           placeholder="Enter a topic (e.g. React, World War II, Photosynthesis)"
           value={topic}
           onChange={e => setTopic(e.target.value)}
           required
+          className="w-[600px] h-[60px] p-[10px] m-[10px]"
         />
-        <div className="flex gap-4">
-          <div className="flex-1">
+        <div className="flex gap-4 items-center">
+          <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">Number of Questions</label>
-            <Select value={numQues} onValueChange={setNumQues}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select questions" />
-              </SelectTrigger>
-              <SelectContent>
-                {[5, 10, 15, 20, 30].map(n => (
-                  <SelectItem key={n} value={n.toString()}>{n}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <Input
+              type="number"
+              min="1"
+              max="30"
+              value={numQues}
+              onChange={e => setNumQues(parseInt(e.target.value) || 5)}
+              className="w-[200px] h-[40px] p-[10px] m-[10px]"
+            />
           </div>
-          <div className="flex-1">
+          <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">Difficulty</label>
-            <Select value={difficulty} onValueChange={setDifficulty} className="Select difficulty">
-              <SelectTrigger>
-                <SelectValue placeholder="Select difficulty" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="easy">Easy</SelectItem>
-                <SelectItem value="medium">Medium</SelectItem>
-                <SelectItem value="hard">Hard</SelectItem>
-              </SelectContent>
-            </Select>
-           
+            <div className="flex gap-4 p-[10px] m-[10px]">
+              {[
+                { value: 'easy', label: 'Easy' },
+                { value: 'medium', label: 'Medium' },
+                { value: 'hard', label: 'Hard' }
+              ].map((option) => (
+                <div key={option.value} className="flex items-center space-x-2">
+                  <input
+                    type="radio"
+                    id={option.value}
+                    name="difficulty"
+                    value={option.value}
+                    checked={difficulty === option.value}
+                    onChange={(e) => setDifficulty(e.target.value)}
+                    className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                  />
+                  <label htmlFor={option.value} className="text-sm font-medium text-gray-700">
+                    {option.label}
+                  </label>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
         <Button
           variant="default"
           disabled={loading || !topic.trim()}
+          className="w-[200px] p-[10px] m-[10px]"
         >
           {loading ? 'Generating...' : 'Generate Quiz'}
         </Button>
