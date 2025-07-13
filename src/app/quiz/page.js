@@ -1,6 +1,14 @@
 'use client';
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function QuizPage() {
   const [topic, setTopic] = useState('');
@@ -32,46 +40,47 @@ export default function QuizPage() {
   };
 
   return (
-    <div className="max-w-xl mx-auto py-16 px-4">
+    <div className="mx-auto py-16 px-4">
       <h2 className="font-heading text-3xl font-bold mb-6 text-blue-700 text-center">AI Quiz Generator</h2>
       <form onSubmit={handleGenerateQuiz} className="flex flex-col gap-4 mb-8">
-        <input
+        <Input
           type="text"
           placeholder="Enter a topic (e.g. React, World War II, Photosynthesis)"
           value={topic}
           onChange={e => setTopic(e.target.value)}
-          className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
           required
         />
         <div className="flex gap-4">
           <div className="flex-1">
             <label className="block text-sm font-medium text-slate-700 mb-1">Number of Questions</label>
-            <select
-              value={numQues}
-              onChange={e => setNumQues(Number(e.target.value))}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
-            >
-              {[5, 10, 15, 20, 30].map(n => (
-                <option key={n} value={n}>{n}</option>
-              ))}
-            </select>
+            <Select value={numQues} onValueChange={setNumQues}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select questions" />
+              </SelectTrigger>
+              <SelectContent>
+                {[5, 10, 15, 20, 30].map(n => (
+                  <SelectItem key={n} value={n.toString()}>{n}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           <div className="flex-1">
             <label className="block text-sm font-medium text-slate-700 mb-1">Difficulty</label>
-            <select
-              value={difficulty}
-              onChange={e => setDifficulty(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
-            >
-              <option value="easy">Easy</option>
-              <option value="medium">Medium</option>
-              <option value="hard">Hard</option>
-            </select>
+            <Select value={difficulty} onValueChange={setDifficulty} className="Select difficulty">
+              <SelectTrigger>
+                <SelectValue placeholder="Select difficulty" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="easy">Easy</SelectItem>
+                <SelectItem value="medium">Medium</SelectItem>
+                <SelectItem value="hard">Hard</SelectItem>
+              </SelectContent>
+            </Select>
+           
           </div>
         </div>
         <Button
-          type="submit"
-          className="bg-blue-600 text-white rounded-lg px-4 py-2 font-semibold shadow hover:bg-blue-700 transition disabled:opacity-60"
+          variant="default"
           disabled={loading || !topic.trim()}
         >
           {loading ? 'Generating...' : 'Generate Quiz'}
