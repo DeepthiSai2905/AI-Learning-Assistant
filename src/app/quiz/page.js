@@ -1,8 +1,11 @@
 'use client';
 import { useState } from 'react';
+import { Button } from "@/components/ui/button";
 
 export default function QuizPage() {
   const [topic, setTopic] = useState('');
+  const [difficulty, setDifficulty] = useState('easy');
+  const [numQues, setNumQues] = useState(5);
   const [loading, setLoading] = useState(false);
   const [quiz, setQuiz] = useState(null);
   const [error, setError] = useState('');
@@ -16,7 +19,7 @@ export default function QuizPage() {
       const res = await fetch('/api/generate-quiz', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ topic }),
+        body: JSON.stringify({ topic, difficulty, numQues }),
       });
       if (!res.ok) throw new Error('Failed to generate quiz');
       const data = await res.json();
@@ -40,13 +43,39 @@ export default function QuizPage() {
           className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
           required
         />
-        <button
+        <div className="flex gap-4">
+          <div className="flex-1">
+            <label className="block text-sm font-medium text-slate-700 mb-1">Number of Questions</label>
+            <select
+              value={numQues}
+              onChange={e => setNumQues(Number(e.target.value))}
+              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+            >
+              {[5, 10, 15, 20, 30].map(n => (
+                <option key={n} value={n}>{n}</option>
+              ))}
+            </select>
+          </div>
+          <div className="flex-1">
+            <label className="block text-sm font-medium text-slate-700 mb-1">Difficulty</label>
+            <select
+              value={difficulty}
+              onChange={e => setDifficulty(e.target.value)}
+              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+            >
+              <option value="easy">Easy</option>
+              <option value="medium">Medium</option>
+              <option value="hard">Hard</option>
+            </select>
+          </div>
+        </div>
+        <Button
           type="submit"
           className="bg-blue-600 text-white rounded-lg px-4 py-2 font-semibold shadow hover:bg-blue-700 transition disabled:opacity-60"
           disabled={loading || !topic.trim()}
         >
           {loading ? 'Generating...' : 'Generate Quiz'}
-        </button>
+        </Button>
       </form>
       {error && <p className="text-red-500 text-center mb-4">{error}</p>}
       {quiz && (
