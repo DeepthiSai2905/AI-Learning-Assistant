@@ -5,6 +5,41 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
+// Material UI imports
+import {
+  Container,
+  Typography,
+  Box,
+  TextField,
+  FormControl,
+  FormLabel,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  Button as MuiButton,
+  Card as MuiCard,
+  CardContent as MuiCardContent,
+  CardHeader as MuiCardHeader,
+  LinearProgress,
+  Chip,
+  Paper,
+  Grid,
+  Divider,
+  createTheme,
+  ThemeProvider,
+  CssBaseline
+} from '@mui/material';
+import {
+  Quiz as QuizIcon,
+  Timer as TimerIcon,
+  NavigateNext as NextIcon,
+  NavigateBefore as PrevIcon,
+  CheckCircle as CheckIcon,
+  Cancel as CancelIcon,
+  Refresh as RefreshIcon,
+  School as SchoolIcon
+} from '@mui/icons-material';
+
 export default function QuizPage() {
   const [topic, setTopic] = useState('');
   const [difficulty, setDifficulty] = useState('easy');
@@ -18,6 +53,62 @@ export default function QuizPage() {
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(0);
   const [quizStarted, setQuizStarted] = useState(false);
+
+  // Create navy blue and white theme
+  const theme = createTheme({
+    palette: {
+      primary: {
+        main: '#1e3a8a', // Navy blue
+        light: '#3b82f6',
+        dark: '#1e40af',
+      },
+      secondary: {
+        main: '#64748b', // Slate gray
+      },
+      background: {
+        default: '#ffffff',
+        paper: '#f8fafc',
+      },
+      text: {
+        primary: '#1e293b',
+        secondary: '#64748b',
+      },
+    },
+    typography: {
+      fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+      h1: {
+        fontWeight: 700,
+        color: '#1e293b',
+      },
+      h2: {
+        fontWeight: 600,
+        color: '#1e293b',
+      },
+      h3: {
+        fontWeight: 600,
+        color: '#1e293b',
+      },
+    },
+    components: {
+      MuiButton: {
+        styleOverrides: {
+          root: {
+            textTransform: 'none',
+            borderRadius: 8,
+            fontWeight: 500,
+          },
+        },
+      },
+      MuiCard: {
+        styleOverrides: {
+          root: {
+            borderRadius: 12,
+            boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+          },
+        },
+      },
+    },
+  });
 
   // Timer effect
   useEffect(() => {
@@ -112,9 +203,9 @@ export default function QuizPage() {
   };
 
   const getScoreColor = (score) => {
-    if (score >= 80) return 'text-green-600';
-    if (score >= 60) return 'text-yellow-600';
-    return 'text-red-600';
+    if (score >= 80) return '#10b981'; // Green
+    if (score >= 60) return '#f59e0b'; // Yellow
+    return '#ef4444'; // Red
   };
 
   const getScoreMessage = (score) => {
@@ -136,272 +227,518 @@ export default function QuizPage() {
   };
 
   return (
-    <div className="my-20 py-16 px-4">
-      <h2 className="font-heading text-3xl font-bold mb-6 text-blue-700 text-center">AI Quiz Generator</h2>
-      
-      {!quiz && (
-        <form onSubmit={handleGenerateQuiz} className="flex flex-col gap-4 mb-8 items-center">
-          <Input
-            type="text"
-            placeholder="Enter a topic (e.g. React, World War II, Photosynthesis)"
-            value={topic}
-            onChange={e => setTopic(e.target.value)}
-            required
-            className="w-[600px] h-[60px] p-[10px] m-[10px]"
-          />
-          <div className="flex gap-4 items-center">
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Number of Questions</label>
-              <Input
-                type="number"
-                min="1"
-                max="30"
-                value={numQues}
-                onChange={e => setNumQues(parseInt(e.target.value) || 5)}
-                className="w-[200px] h-[40px] p-[10px] m-[10px]"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Difficulty</label>
-              <div className="flex gap-4 p-[10px] m-[10px]">
-                {[
-                  { value: 'easy', label: 'Easy' },
-                  { value: 'medium', label: 'Medium' },
-                  { value: 'hard', label: 'Hard' }
-                ].map((option) => (
-                  <div key={option.value} className="flex items-center space-x-2">
-                    <input
-                      type="radio"
-                      id={option.value}
-                      name="difficulty"
-                      value={option.value}
-                      checked={difficulty === option.value}
-                      onChange={(e) => setDifficulty(e.target.value)}
-                      className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Container maxWidth="lg" sx={{ py: 4 }}>
+        <Box sx={{ textAlign: 'center', mb: 4 }}>
+          <Typography variant="h3" component="h1" sx={{ 
+            fontWeight: 700, 
+            color: '#1e3a8a',
+            mb: 2,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 2
+          }}>
+            <QuizIcon sx={{ fontSize: 40 }} />
+            AI Quiz Generator
+          </Typography>
+          <Typography variant="h6" color="text.secondary">
+            Generate personalized quizzes on any topic with AI
+          </Typography>
+        </Box>
+        
+        {!quiz && (
+          <MuiCard sx={{ maxWidth: 600, mx: 'auto', p: 4 }}>
+            <MuiCardContent>
+              <form onSubmit={handleGenerateQuiz}>
+                <Box sx={{ mb: 3 }}>
+                  <TextField
+                    fullWidth
+                    label="Enter a topic (e.g. React, World War II, Photosynthesis)"
+                    value={topic}
+                    onChange={(e) => setTopic(e.target.value)}
+                    required
+                    variant="outlined"
+                    size="large"
+                    sx={{ mb: 3 }}
+                  />
+                  
+                  <Grid container spacing={3}>
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        fullWidth
+                        label="Number of Questions"
+                        type="number"
+                        value={numQues}
+                        onChange={(e) => setNumQues(parseInt(e.target.value) || 5)}
+                        inputProps={{ min: 1, max: 30 }}
+                        variant="outlined"
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <FormControl component="fieldset" fullWidth>
+                        <FormLabel component="legend" sx={{ color: '#1e293b', fontWeight: 500 }}>
+                          Difficulty Level
+                        </FormLabel>
+                        <RadioGroup
+                          row
+                          value={difficulty}
+                          onChange={(e) => setDifficulty(e.target.value)}
+                        >
+                          {[
+                            { value: 'easy', label: 'Easy' },
+                            { value: 'medium', label: 'Medium' },
+                            { value: 'hard', label: 'Hard' }
+                          ].map((option) => (
+                            <FormControlLabel
+                              key={option.value}
+                              value={option.value}
+                              control={<Radio />}
+                              label={option.label}
+                              sx={{ color: '#64748b' }}
+                            />
+                          ))}
+                        </RadioGroup>
+                      </FormControl>
+                    </Grid>
+                  </Grid>
+                </Box>
+                
+                <MuiButton
+                  type="submit"
+                  variant="contained"
+                  fullWidth
+                  size="large"
+                  disabled={loading || !topic.trim()}
+                  sx={{
+                    bgcolor: '#1e3a8a',
+                    '&:hover': { bgcolor: '#1e40af' },
+                    py: 1.5,
+                    fontSize: '1.1rem'
+                  }}
+                >
+                  {loading ? 'Generating Quiz...' : 'Generate Quiz'}
+                </MuiButton>
+              </form>
+            </MuiCardContent>
+          </MuiCard>
+        )}
+
+        {error && (
+          <Box sx={{ textAlign: 'center', mb: 3 }}>
+            <Typography color="error" variant="body1">
+              {error}
+            </Typography>
+          </Box>
+        )}
+
+        {quiz && !showResults && (
+          <Grid container spacing={2}>
+            {/* Left Panel - Quiz Info */}
+            <Grid item xs={12} md={3}>
+              <MuiCard sx={{ position: 'sticky', top: 20, maxHeight: 'calc(100vh - 40px)', overflow: 'auto' }}>
+                <MuiCardContent sx={{ p: 2 }}>
+                  <Box sx={{ mb: 2 }}>
+                    <Chip 
+                      label={`${difficulty.charAt(0).toUpperCase() + difficulty.slice(1)} Level`}
+                      color="primary"
+                      variant="outlined"
+                      size="small"
+                      sx={{ mb: 1 }}
                     />
-                    <label htmlFor={option.value} className="text-sm font-medium text-gray-700">
-                      {option.label}
-                    </label>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-          <Button
-            variant="default"
-            disabled={loading || !topic.trim()}
-            className="w-[200px] p-[10px] m-[10px]"
-          >
-            {loading ? 'Generating...' : 'Generate Quiz'}
-          </Button>
-        </form>
-      )}
+                    <Typography variant="body2" sx={{ color: '#1e3a8a', fontWeight: 500, wordBreak: 'break-word' }}>
+                      {topic}
+                    </Typography>
+                  </Box>
 
-      {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+                  {/* Timer */}
+                  <Box sx={{ mb: 2, p: 1.5, bgcolor: '#f8fafc', borderRadius: 1.5 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 0.5 }}>
+                      <TimerIcon sx={{ color: '#1e3a8a', fontSize: 16 }} />
+                      <Typography variant="caption" color="text.secondary">
+                        Time Remaining
+                      </Typography>
+                    </Box>
+                    <Typography variant="h6" sx={{ 
+                      fontWeight: 'bold',
+                      color: timeLeft < 60 ? '#ef4444' : '#1e3a8a',
+                      fontSize: '1.25rem'
+                    }}>
+                      {formatTime(timeLeft)}
+                    </Typography>
+                  </Box>
 
-      {quiz && !showResults && (
-        <div className="max-w-4xl mx-auto">
-          {/* Header with Timer and Progress */}
-          <div className="mb-6">
-            <div className="flex justify-between items-center mb-4">
-              <div className="flex flex-col items-center gap-10">
-                <Badge variant="default" className="text-lg p-4 m-4">
-                  {difficulty.charAt(0).toUpperCase() + difficulty.slice(1)} Level
-                </Badge>
-                <span className="text-lg font-large text-gray-700">
-                  Topic: {topic}
-                </span>
-                <div className="flex flex-row gap-10 items-center">
-                  <div className="text-sm text-gray-600">Time Remaining  </div>
-                  <div className={`text-lg font-bold ${timeLeft < 60 ? 'text-red-600' : 'text-gray-700'}`}>
-                    {formatTime(timeLeft)}
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <div className="flex justify-between items-center mb-2">
-              <span className="text-sm font-medium text-gray-700">
-                Question {currentQuestion + 1} of {quiz.length}
-              </span>
-              <span className="text-sm font-medium text-gray-700">
-                {Object.keys(userAnswers).length} answered
-              </span>
-            </div>
-            <div className="w-full bg-gray-200 rounded-full h-2">
-              <div 
-                className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                style={{ width: `${((currentQuestion + 1) / quiz.length) * 100}%` }}
-              ></div>
-            </div>
-          </div>
+                  {/* Progress */}
+                  <Box sx={{ mb: 2 }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
+                      <Typography variant="caption" color="text.secondary">
+                        Progress
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        {currentQuestion + 1} / {quiz.length}
+                      </Typography>
+                    </Box>
+                    <LinearProgress 
+                      variant="determinate" 
+                      value={((currentQuestion + 1) / quiz.length) * 100}
+                      sx={{ 
+                        height: 6, 
+                        borderRadius: 3,
+                        bgcolor: '#e2e8f0',
+                        '& .MuiLinearProgress-bar': {
+                          bgcolor: '#1e3a8a'
+                        }
+                      }}
+                    />
+                    <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, textAlign: 'center', display: 'block' }}>
+                      {Object.keys(userAnswers).length} of {quiz.length} answered
+                    </Typography>
+                  </Box>
 
-          {/* Question Card - Centered with Fixed Width */}
-          <div className="flex justify-center mb-6">
-            <Card className="w-[400px] min-h-[400px] flex flex-col">
-              <CardHeader className="flex-shrink-0">
-                <CardTitle className="flex items-center gap-2">
-                  <Badge variant="outline" className="text-sm">
-                    Question {currentQuestion + 1}
-                  </Badge>
-                  <div className="text-lg leading-tight">{quiz[currentQuestion].question}</div>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="flex-1 flex flex-col justify-center p-16">
-                <div className="space-y-3">
-                  {quiz[currentQuestion].options.map((option, optionIndex) => (
-                    <div
-                      key={optionIndex}
-                      className={`p-4 border-2 rounded-lg cursor-pointer transition-all duration-200 ${
-                        userAnswers[currentQuestion] === option
-                          ? 'border-blue-500 bg-blue-50'
-                          : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
-                      }`}
-                      onClick={() => handleAnswerSelect(currentQuestion, option)}
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
-                          userAnswers[currentQuestion] === option
-                            ? 'border-blue-500 bg-blue-500'
-                            : 'border-gray-300'
-                        }`}>
-                          {userAnswers[currentQuestion] === option && (
-                            <div className="w-2 h-2 bg-white rounded-full"></div>
-                          )}
-                        </div>
-                        <span className="text-gray-700 text-sm leading-relaxed">{option}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+                  {/* Question Navigation */}
+                  <Box>
+                    <Typography variant="caption" sx={{ color: '#1e293b', fontWeight: 500, mb: 1, display: 'block' }}>
+                      Questions
+                    </Typography>
+                    <Grid container spacing={0.5}>
+                      {quiz.map((_, index) => (
+                        <Grid item key={index}>
+                          <MuiButton
+                            size="small"
+                            variant={currentQuestion === index ? "contained" : "outlined"}
+                            onClick={() => setCurrentQuestion(index)}
+                            sx={{
+                              minWidth: 32,
+                              height: 32,
+                              fontSize: '0.75rem',
+                              bgcolor: currentQuestion === index ? '#1e3a8a' : 
+                                       userAnswers[index] ? '#10b981' : 'transparent',
+                              color: currentQuestion === index || userAnswers[index] ? 'white' : '#64748b',
+                              borderColor: userAnswers[index] ? '#10b981' : '#e2e8f0',
+                              '&:hover': {
+                                bgcolor: currentQuestion === index ? '#1e40af' : '#f1f5f9'
+                              }
+                            }}
+                          >
+                            {index + 1}
+                          </MuiButton>
+                        </Grid>
+                      ))}
+                    </Grid>
+                  </Box>
+                </MuiCardContent>
+              </MuiCard>
+            </Grid>
 
-          {/* Navigation Buttons - Centered */}
-          <div className="flex justify-center items-center gap-4">
-            <Button
-              variant="outline"
-              onClick={handlePreviousQuestion}
-              disabled={currentQuestion === 0}
-              className="px-6"
-            >
-              Previous
-            </Button>
-            
-            {currentQuestion < quiz.length - 1 ? (
-              <Button
-                variant="default"
-                onClick={handleNextQuestion}
-                disabled={!userAnswers[currentQuestion]}
-                className="px-6"
-              >
-                Next
-              </Button>
-            ) : (
-              <Button
-                variant="default"
-                onClick={handleSubmitQuiz}
-                disabled={Object.keys(userAnswers).length < quiz.length}
-                className="px-6"
-              >
-                Submit Quiz
-              </Button>
-            )}
-          </div>
-        </div>
-      )}
-
-{showResults && quiz && (
-  <div className="max-w-4xl mx-auto">
-    <Card className="mb-8">
-      <CardHeader>
-        <CardTitle className="text-center text-3xl font-semibold">Quiz Results</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="text-center mb-8">
-          <div className={`text-5xl font-bold mb-4 ${getScoreColor(score)}`}>
-            {score}%
-          </div>
-          <div className="text-2xl text-gray-600 mb-6">
-            {getScoreMessage(score)}
-          </div>
-          <div className="text-xl text-gray-700">
-            You got {Object.values(userAnswers).filter((answer, index) => 
-              answer === quiz[index].answer
-            ).length} out of {quiz.length} questions correct
-          </div>
-          {timeLeft > 0 && (
-            <div className="text-xl text-gray-500 mt-4">
-              Time taken: {formatTime(numQues * 120 - timeLeft)}
-            </div>
-          )}
-        </div>
-
-        {/* Results Cards - Centered Column Layout */}
-        <div className="flex flex-col items-center space-y-24">
-          {quiz.map((question, index) => {
-            const userAnswer = userAnswers[index];
-            const isCorrect = userAnswer === question.answer;
-            
-            return (
-              <Card key={index} className={`w-[500px] border-2 ${
-                isCorrect ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'
-              }`}>
-                <CardContent className="pt-6 px-8 pb-10">
-                  <div className="flex items-start gap-4 mb-6">
-                    <Badge variant={isCorrect ? "default" : "destructive"} className="text-md font-semibold">
-                      {isCorrect ? '✓ Correct' : '✗ Incorrect'}
-                    </Badge>
-                    <div className="font-medium text-xl">Question {index + 1}</div>
-                  </div>
-                  <p className="text-xl text-gray-700 mb-6">{question.question}</p>
-                  <div className="space-y-6">
-                    {question.options.map((option, optionIndex) => (
-                      <div
+            {/* Right Panel - Quiz Question */}
+            <Grid item xs={12} md={9}>
+              <MuiCard sx={{ maxHeight: 'calc(100vh - 40px)', overflow: 'auto' }}>
+                <MuiCardHeader
+                  sx={{ pb: 1 }}
+                  title={
+                    <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, flexWrap: 'wrap' }}>
+                      <Chip 
+                        label={`Question ${currentQuestion + 1}`}
+                        color="primary"
+                        variant="outlined"
+                        size="small"
+                      />
+                      <Typography variant="h6" sx={{ color: '#1e293b', wordBreak: 'break-word', lineHeight: 1.3 }}>
+                        {quiz[currentQuestion].question}
+                      </Typography>
+                    </Box>
+                  }
+                />
+                <MuiCardContent sx={{ p: 2 }}>
+                  <Box sx={{ mb: 3 }}>
+                    {quiz[currentQuestion].options.map((option, optionIndex) => (
+                      <Paper
                         key={optionIndex}
-                        className={`p-4 rounded-lg border ${
-                          option === question.answer
-                            ? 'border-green-500 bg-green-100'
-                            : option === userAnswer && !isCorrect
-                            ? 'border-red-500 bg-red-100'
-                            : 'border-gray-200'
-                        }`}
+                        elevation={userAnswers[currentQuestion] === option ? 1 : 0}
+                        sx={{
+                          p: 2,
+                          mb: 1.5,
+                          cursor: 'pointer',
+                          border: 1.5,
+                          borderColor: userAnswers[currentQuestion] === option ? '#1e3a8a' : '#e2e8f0',
+                          bgcolor: userAnswers[currentQuestion] === option ? '#f8fafc' : 'white',
+                          '&:hover': {
+                            borderColor: '#1e3a8a',
+                            bgcolor: '#f8fafc'
+                          },
+                          transition: 'all 0.2s ease',
+                          wordBreak: 'break-word'
+                        }}
+                        onClick={() => handleAnswerSelect(currentQuestion, option)}
                       >
-                        <div className="flex items-center gap-6">
-                          {option === question.answer && (
-                            <span className="text-green-600 font-bold text-2xl">✓</span>
-                          )}
-                          {option === userAnswer && !isCorrect && (
-                            <span className="text-red-600 font-bold text-2xl">✗</span>
-                          )}
-                          <span className={`text-lg ${option === question.answer ? 'font-semibold text-green-700' : ''}`}>
+                        <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
+                          <Box
+                            sx={{
+                              width: 20,
+                              height: 20,
+                              borderRadius: '50%',
+                              border: 2,
+                              borderColor: userAnswers[currentQuestion] === option ? '#1e3a8a' : '#cbd5e1',
+                              bgcolor: userAnswers[currentQuestion] === option ? '#1e3a8a' : 'transparent',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              flexShrink: 0,
+                              mt: 0.25
+                            }}
+                          >
+                            {userAnswers[currentQuestion] === option && (
+                              <Box
+                                sx={{
+                                  width: 6,
+                                  height: 6,
+                                  borderRadius: '50%',
+                                  bgcolor: 'white'
+                                }}
+                              />
+                            )}
+                          </Box>
+                          <Typography 
+                            variant="body2" 
+                            sx={{ 
+                              color: userAnswers[currentQuestion] === option ? '#1e3a8a' : '#1e293b',
+                              fontWeight: userAnswers[currentQuestion] === option ? 500 : 400,
+                              lineHeight: 1.4
+                            }}
+                          >
                             {option}
-                          </span>
-                          {option === question.answer && (
-                            <Badge variant="outline" className="text-xs ml-auto">
-                              Correct Answer
-                            </Badge>
-                          )}
-                        </div>
-                      </div>
+                          </Typography>
+                        </Box>
+                      </Paper>
                     ))}
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
+                  </Box>
 
-        <div className="flex justify-center mt-8">
-          <Button onClick={resetQuiz} variant="outline" className="px-8 py-4 text-lg">
-            Take Another Quiz
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
-  </div>
-)}
-    </div>
+                  {/* Navigation Buttons */}
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', pt: 1.5, borderTop: 1, borderColor: '#e2e8f0' }}>
+                    <MuiButton
+                      variant="outlined"
+                      startIcon={<PrevIcon />}
+                      onClick={handlePreviousQuestion}
+                      disabled={currentQuestion === 0}
+                      size="small"
+                      sx={{
+                        borderColor: '#1e3a8a',
+                        color: '#1e3a8a',
+                        '&:hover': {
+                          borderColor: '#1e40af',
+                          bgcolor: '#f8fafc'
+                        }
+                      }}
+                    >
+                      Previous
+                    </MuiButton>
+                    
+                    {currentQuestion < quiz.length - 1 ? (
+                      <MuiButton
+                        variant="contained"
+                        endIcon={<NextIcon />}
+                        onClick={handleNextQuestion}
+                        disabled={!userAnswers[currentQuestion]}
+                        size="small"
+                        sx={{
+                          bgcolor: '#1e3a8a',
+                          '&:hover': { bgcolor: '#1e40af' }
+                        }}
+                      >
+                        Next
+                      </MuiButton>
+                    ) : (
+                      <MuiButton
+                        variant="contained"
+                        onClick={handleSubmitQuiz}
+                        disabled={Object.keys(userAnswers).length < quiz.length}
+                        size="small"
+                        sx={{
+                          bgcolor: '#10b981',
+                          '&:hover': { bgcolor: '#059669' }
+                        }}
+                      >
+                        Submit Quiz
+                      </MuiButton>
+                    )}
+                  </Box>
+                </MuiCardContent>
+              </MuiCard>
+            </Grid>
+          </Grid>
+        )}
+
+        {showResults && quiz && (
+          <MuiCard>
+            <MuiCardHeader
+              title={
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+                  <Typography variant="h4" sx={{ color: '#1e3a8a', fontWeight: 700 }}>
+                    Quiz Results
+                  </Typography>
+                  {/* Circular Score */}
+                  <Box sx={{ position: 'relative', display: 'inline-flex' }}>
+                    <Box
+                      sx={{
+                        width: 80,
+                        height: 80,
+                        borderRadius: '50%',
+                        background: `conic-gradient(${getScoreColor(score)} ${score * 3.6}deg, #e2e8f0 ${score * 3.6}deg)`,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          width: 60,
+                          height: 60,
+                          borderRadius: '50%',
+                          bgcolor: 'white',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.1)'
+                        }}
+                      >
+                        <Typography 
+                          variant="h6" 
+                          sx={{ 
+                            fontWeight: 'bold',
+                            color: getScoreColor(score)
+                          }}
+                        >
+                          {score}%
+                        </Typography>
+                      </Box>
+                    </Box>
+                  </Box>
+                </Box>
+              }
+            />
+            <MuiCardContent>
+              <Box sx={{ textAlign: 'center', mb: 4 }}>
+                <Typography variant="h5" sx={{ color: getScoreColor(score), fontWeight: 600, mb: 1 }}>
+                  {getScoreMessage(score)}
+                </Typography>
+                <Typography variant="body1" sx={{ color: 'text.secondary' }}>
+                  You got {Object.values(userAnswers).filter((answer, index) => 
+                    answer === quiz[index].answer
+                  ).length} out of {quiz.length} questions correct
+                </Typography>
+                {timeLeft > 0 && (
+                  <Typography variant="body2" sx={{ color: 'text.secondary', mt: 1 }}>
+                    Time taken: {formatTime(numQues * 120 - timeLeft)}
+                  </Typography>
+                )}
+              </Box>
+
+              <Divider sx={{ my: 3 }} />
+
+              <Box sx={{ space: 2 }}>
+                {quiz.map((question, index) => {
+                  const userAnswer = userAnswers[index];
+                  const isCorrect = userAnswer === question.answer;
+                  
+                  return (
+                    <MuiCard key={index} sx={{ 
+                      mb: 2,
+                      border: 1.5,
+                      borderColor: isCorrect ? '#10b981' : '#ef4444',
+                      bgcolor: isCorrect ? '#f0fdf4' : '#fef2f2'
+                    }}>
+                      <MuiCardContent sx={{ p: 2 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1.5 }}>
+                          <Chip 
+                            icon={isCorrect ? <CheckIcon /> : <CancelIcon />}
+                            label={isCorrect ? 'Correct' : 'Incorrect'}
+                            color={isCorrect ? 'success' : 'error'}
+                            variant="outlined"
+                            size="small"
+                          />
+                          <Typography variant="subtitle2" sx={{ color: '#1e293b', fontWeight: 600 }}>
+                            Question {index + 1}
+                          </Typography>
+                        </Box>
+                        
+                        <Typography variant="body2" sx={{ mb: 2, color: '#1e293b', wordBreak: 'break-word' }}>
+                          {question.question}
+                        </Typography>
+                        
+                        <Box sx={{ space: 1 }}>
+                          {question.options.map((option, optionIndex) => (
+                            <Paper
+                              key={optionIndex}
+                              sx={{
+                                p: 1.5,
+                                mb: 1,
+                                border: 1.5,
+                                borderColor: option === question.answer ? '#10b981' : 
+                                             option === userAnswer && !isCorrect ? '#ef4444' : '#e2e8f0',
+                                bgcolor: option === question.answer ? '#f0fdf4' : 
+                                        option === userAnswer && !isCorrect ? '#fef2f2' : 'white',
+                                wordBreak: 'break-word'
+                              }}
+                            >
+                              <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
+                                {option === question.answer && (
+                                  <CheckIcon sx={{ color: '#10b981', fontSize: 18, mt: 0.25 }} />
+                                )}
+                                {option === userAnswer && !isCorrect && (
+                                  <CancelIcon sx={{ color: '#ef4444', fontSize: 18, mt: 0.25 }} />
+                                )}
+                                <Typography 
+                                  variant="body2"
+                                  sx={{ 
+                                    color: option === question.answer ? '#10b981' : '#1e293b',
+                                    fontWeight: option === question.answer ? 600 : 400,
+                                    lineHeight: 1.4
+                                  }}
+                                >
+                                  {option}
+                                </Typography>
+                                {option === question.answer && (
+                                  <Chip 
+                                    label="Correct" 
+                                    size="small" 
+                                    color="success" 
+                                    variant="outlined"
+                                    sx={{ ml: 'auto', fontSize: '0.7rem' }}
+                                  />
+                                )}
+                              </Box>
+                            </Paper>
+                          ))}
+                        </Box>
+                      </MuiCardContent>
+                    </MuiCard>
+                  );
+                })}
+              </Box>
+
+              <Box sx={{ textAlign: 'center', mt: 3 }}>
+                <MuiButton
+                  variant="outlined"
+                  startIcon={<RefreshIcon />}
+                  onClick={resetQuiz}
+                  sx={{
+                    borderColor: '#1e3a8a',
+                    color: '#1e3a8a',
+                    '&:hover': {
+                      borderColor: '#1e40af',
+                      bgcolor: '#f8fafc'
+                    }
+                  }}
+                >
+                  Take Another Quiz
+                </MuiButton>
+              </Box>
+            </MuiCardContent>
+          </MuiCard>
+        )}
+      </Container>
+    </ThemeProvider>
   );
 } 
