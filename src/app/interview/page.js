@@ -11,17 +11,11 @@ import {
   CardHeader as MuiCardHeader,
   Grid,
   Chip,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Divider,
   Alert,
   CircularProgress,
   createTheme,
   ThemeProvider,
   CssBaseline,
-  FormGroup,
-  FormControlLabel,
   Checkbox,
   Paper
 } from '@mui/material';
@@ -29,7 +23,6 @@ import {
   Work as WorkIcon,
   Description as DescriptionIcon,
   QuestionAnswer as QuestionIcon,
-  ExpandMore as ExpandMoreIcon,
   Send as SendIcon,
   Refresh as RefreshIcon,
   Lightbulb as LightbulbIcon,
@@ -47,7 +40,6 @@ export default function InterviewPrepPage() {
   const [loading, setLoading] = useState(false);
   const [questions, setQuestions] = useState([]);
   const [error, setError] = useState('');
-  const [currentQuestion, setCurrentQuestion] = useState(0);
   const [showExplanations, setShowExplanations] = useState({});
   const [selectedQuestionTypes, setSelectedQuestionTypes] = useState({
     technical: true,
@@ -162,7 +154,6 @@ export default function InterviewPrepPage() {
     setLoading(true);
     setError('');
     setQuestions([]);
-    setCurrentQuestion(0);
     setShowExplanations({});
 
     try {
@@ -230,7 +221,6 @@ export default function InterviewPrepPage() {
     setResume('');
     setQuestions([]);
     setError('');
-    setCurrentQuestion(0);
     setShowExplanations({});
     setSelectedQuestionTypes({
       technical: true,

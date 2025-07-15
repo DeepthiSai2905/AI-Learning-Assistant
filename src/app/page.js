@@ -27,7 +27,6 @@ import {
   CardContent as MuiCardContent,
   CardHeader as MuiCardHeader,
   Button as MuiButton,
-  Chip,
   createTheme,
   ThemeProvider,
   CssBaseline
@@ -36,11 +35,7 @@ import {
   School as SchoolIcon,
   Quiz as QuizIcon,
   Work as WorkIcon,
-  Dashboard as DashboardIcon,
-  TrendingUp as TrendingUpIcon,
-  Psychology as PsychologyIcon,
-  Assessment as AssessmentIcon,
-  EmojiEvents as EmojiEventsIcon
+  Dashboard as DashboardIcon
 } from '@mui/icons-material';
 
 export default function HomePage() {

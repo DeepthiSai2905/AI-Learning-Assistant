@@ -1,9 +1,5 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 
 // Material UI imports
 import {
@@ -22,9 +18,7 @@ import {
   CardHeader as MuiCardHeader,
   LinearProgress,
   Chip,
-  Paper,
   Grid,
-  Divider,
   createTheme,
   ThemeProvider,
   CssBaseline
@@ -37,7 +31,6 @@ import {
   CheckCircle as CheckIcon,
   Cancel as CancelIcon,
   Refresh as RefreshIcon,
-  School as SchoolIcon
 } from '@mui/icons-material';
 
 export default function QuizPage() {
@@ -197,7 +190,7 @@ export default function QuizPage() {
   };
 
   const handleSubmitQuiz = () => {
-    const results = calculateScore();
+    // const results = calculateScore();
     setShowResults(true);
     setQuizStarted(false);
   };
