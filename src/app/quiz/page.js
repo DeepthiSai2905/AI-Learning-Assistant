@@ -12,6 +12,7 @@ import {
   RadioGroup,
   FormControlLabel,
   Radio,
+  Paper, Divider,
   Button as MuiButton,
   Card as MuiCard,
   CardContent as MuiCardContent,
@@ -177,17 +178,17 @@ export default function QuizPage() {
     }
   };
 
-  const calculateScore = () => {
-    let correctAnswers = 0;
-    quiz.forEach((question, index) => {
-      if (userAnswers[index] === question.answer) {
-        correctAnswers++;
-      }
-    });
-    const calculatedScore = Math.round((correctAnswers / quiz.length) * 100);
-    setScore(calculatedScore);
-    return { correctAnswers, total: quiz.length, percentage: calculatedScore };
-  };
+  // const calculateScore = () => {
+  //   let correctAnswers = 0;
+  //   quiz.forEach((question, index) => {
+  //     if (userAnswers[index] === question.answer) {
+  //       correctAnswers++;
+  //     }
+  //   });
+  //   const calculatedScore = Math.round((correctAnswers / quiz.length) * 100);
+  //   setScore(calculatedScore);
+  //   return { correctAnswers, total: quiz.length, percentage: calculatedScore };
+  // };
 
   const handleSubmitQuiz = () => {
     // const results = calculateScore();

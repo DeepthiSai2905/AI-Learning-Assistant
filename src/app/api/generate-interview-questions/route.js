@@ -79,7 +79,7 @@ export async function POST(req) {
     try {
       questions = JSON.parse(cleaned);
     } catch (e) {
-      console.error('Failed to parse JSON:', cleaned);
+      console.error('Failed to parse JSON:', e);
       return NextResponse.json({ error: 'Failed to generate questions' }, { status: 500 });
     }
 

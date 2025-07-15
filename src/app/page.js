@@ -1,20 +1,11 @@
 'use client';
-import { useState } from 'react';
 import Link from 'next/link';
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { 
   BookOpen, 
-  Brain, 
-  Target, 
+  Brain,
   Users, 
-  Trophy, 
-  Clock, 
-  TrendingUp, 
-  Zap,
+  Trophy,
   ArrowRight,
-  Star
 } from 'lucide-react';
 
 // Material UI imports
@@ -39,7 +30,6 @@ import {
 } from '@mui/icons-material';
 
 export default function HomePage() {
-  const [isHovered, setIsHovered] = useState(null);
 
   // Create navy blue and white theme
   const theme = createTheme({

@@ -34,7 +34,7 @@ export async function POST(req) {
     try {
       quiz = JSON.parse(cleaned);
     } catch (e) {
-      return NextResponse.json({ error: 'Could not parse JSON', raw: fullText }, { status: 500 });
+      return NextResponse.json({ error: `Could not parse JSON + ${e}`, raw: fullText }, { status: 500 });
     }
 
     return NextResponse.json({ quiz });

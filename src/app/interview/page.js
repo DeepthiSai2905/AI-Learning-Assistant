@@ -212,7 +212,7 @@ export default function InterviewPrepPage() {
       
       setShowExplanations(prev => ({ ...prev, [questionIndex]: true }));
     } catch (err) {
-      setError('Failed to get explanation for this question');
+      setError('Failed to get explanation for this question',err);
     }
   };
 
@@ -246,6 +246,7 @@ export default function InterviewPrepPage() {
     let sections = {};
     let idx = 0;
     explanation.replace(regex, (match) => {
+      console.log("match",match)
       if (parts[idx]) {
         sections[headers[idx]] = parts[idx];
         idx++;
@@ -299,7 +300,7 @@ export default function InterviewPrepPage() {
               />
               <MuiCardContent>
                 <Typography variant="body2" sx={{ color: '#64748b', mb: 3 }}>
-                  Choose the types of interview questions you'd like to practice with:
+                  Choose the types of interview questions youd like to practice with:
                 </Typography>
                 <Grid container spacing={2}>
                   {questionTypes.map((type) => (
@@ -490,7 +491,7 @@ export default function InterviewPrepPage() {
                         const sections = parseExplanationSections(question.explanation);
                         return (
                           <Box sx={{ mt: 2 }}>
-                            {Object.entries(sections).map(([header, content], i) => {
+                            {Object.entries(sections).map(([header, content]) => {
                               if (header === 'Follow-up Considerations') {
                                 return (
                                   <Box key={header} sx={{ mt: 2 }}>
